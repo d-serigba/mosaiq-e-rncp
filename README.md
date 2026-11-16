@@ -1,4 +1,4 @@
-# mosaïq(e) — microblogging visuel en grille Masonry
+# mosaïq(e) — microblogging visuel en grille Masonry [README temporaire]
 
 Projet RNCP niveau 5 : plateforme inspirée de Tumblr (billets texte / image / citation / lien, tags, likes, reblogs, abonnements) avec un affichage en grille Masonry façon Pinterest.
 
