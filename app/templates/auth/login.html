@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Connexion — mosaïq(e){% endblock %}
+{% block content %}
+<div class="panel narrow">
+  <h1>Connexion</h1>
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {{ field(form.email, autocomplete="email") }}
+    {{ field(form.password, autocomplete="current-password") }}
+    <label class="check">{{ form.remember }} {{ form.remember.label.text }}</label>
+    {{ form.submit(class="btn") }}
+  </form>
+  <p>Pas encore de compte ? <a href="{{ url_for('auth.register') }}">Inscription</a></p>
+</div>
+{% endblock %}

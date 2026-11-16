@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Administration — mosaïq(e){% endblock %}
+{% block content %}
+<h1>Administration</h1>
+
+<section class="panel">
+  <h2>Comptes ({{ users|length }})</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pseudo</th><th>E-mail</th><th>Rôle</th><th>Statut</th><th></th></tr></thead>
+      <tbody>
+      {% for u in users %}
+        <tr>
+          <td><a href="{{ url_for('main.profile', pseudo=u.pseudo) }}">{{ u.pseudo }}</a></td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.role }}</td>
+          <td>{{ 'actif' if u.actif else 'suspendu' }}</td>
+          <td>
+            {% if not u.is_admin %}
+            <form method="post" action="{{ url_for('admin.toggle_user', user_id=u.id_user) }}" class="inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="link-btn">{{ 'Suspendre' if u.actif else 'Réactiver' }}</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Derniers billets</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Type</th><th>Titre</th><th>Auteur</th><th></th></tr></thead>
+      <tbody>
+      {% for p in posts %}
+        <tr>
+          <td>{{ p.id_post }}</td>
+          <td>{{ p.type_post }}</td>
+          <td><a href="{{ url_for('main.post_detail', post_id=p.id_post) }}">{{ p.titre or '(sans titre)' }}</a></td>
+          <td>{{ p.auteur.pseudo }}</td>
+          <td>
+            <form method="post" action="{{ url_for('admin.delete_post', post_id=p.id_post) }}" class="inline">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="link-btn danger">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

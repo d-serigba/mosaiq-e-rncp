@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Mon profil — mosaïq(e){% endblock %}
+{% block content %}
+<div class="panel narrow">
+  <h1>Mon profil</h1>
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {{ form.hidden_tag() }}
+    {{ field(form.bio, rows=4) }}
+    {{ field(form.avatar, accept="image/png,image/jpeg,image/gif,image/webp") }}
+    {{ form.submit(class="btn") }}
+  </form>
+</div>
+{% endblock %}

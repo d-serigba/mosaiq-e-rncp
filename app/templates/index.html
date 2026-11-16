@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="tabs">
+  <a class="tab {{ 'active' if feed != 'following' }}" href="{{ url_for('main.index') }}">Récents</a>
+  {% if current_user.is_authenticated %}
+    <a class="tab {{ 'active' if feed == 'following' }}" href="{{ url_for('main.index', feed='following') }}">Abonnements</a>
+  {% endif %}
+</div>
+{% set grid_feed = feed %}
+{% include "_grid.html" %}
+{% endblock %}

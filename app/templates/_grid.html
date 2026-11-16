@@ -1,0 +1,8 @@
+<section id="masonry" class="masonry" aria-live="polite"
+         data-endpoint="{{ url_for('main.api_posts') }}"
+         data-feed="{{ grid_feed or '' }}"
+         data-tag="{{ grid_tag or '' }}"
+         data-user="{{ grid_user or '' }}"></section>
+<p id="grid-status" class="status" role="status"></p>
+<div class="center"><button id="load-more" class="btn" type="button" hidden>Charger plus</button></div>
+<script src="{{ url_for('static', filename='js/masonry.js') }}" defer></script>

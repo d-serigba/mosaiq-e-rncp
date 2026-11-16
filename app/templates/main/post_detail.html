@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}{{ post.titre or 'Billet' }} — mosaïq(e){% endblock %}
+{% block content %}
+<article class="card card-detail">
+  {% if data.reblog_de %}
+    <p class="card-reblog">↻ reblogué depuis
+      <a href="{{ data.reblog_de.auteur_url }}">@{{ data.reblog_de.auteur }}</a>
+      (<a href="{{ data.reblog_de.url }}">billet original</a>)</p>
+  {% endif %}
+  {% if data.image %}<img class="card-media" src="{{ data.image }}" alt="{{ post.titre or 'Image du billet' }}">{% endif %}
+  {% if post.titre %}<h1 class="card-title">{{ post.titre }}</h1>{% endif %}
+  {% if post.type_post == 'citation' %}
+    <blockquote class="card-quote">{{ post.contenu_texte }}</blockquote>
+  {% elif post.contenu_texte %}
+    <p class="card-text">{{ post.contenu_texte }}</p>
+  {% endif %}
+  {% if data.lien %}
+    <p><a class="card-link" href="{{ data.lien }}" target="_blank" rel="noopener noreferrer nofollow">{{ data.lien }}</a></p>
+  {% endif %}
+  {% if data.tags %}
+    <p class="tags">{% for t in data.tags %}<a href="{{ t.url }}">#{{ t.nom }}</a> {% endfor %}</p>
+  {% endif %}
+  <footer class="card-footer">
+    <a href="{{ data.auteur_url }}">@{{ data.auteur }}</a>
+    <span class="muted">{{ data.date }}</span>
+    <span class="actions">
+      <button type="button" class="act {{ 'active' if data.liked }}" data-action="like" data-post-id="{{ post.id_post }}" aria-pressed="{{ 'true' if data.liked else 'false' }}">♥ <span class="count">{{ data.likes }}</span></button>
+      <button type="button" class="act" data-action="reblog" data-post-id="{{ post.id_post }}">↻ <span class="count">{{ data.reblogs }}</span></button>
+    </span>
+  </footer>
+  {% if current_user.is_authenticated and (current_user.id_user == post.id_user or current_user.is_admin) %}
+    <form method="post" action="{{ url_for('main.delete_post', post_id=post.id_post) }}" class="inline">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="link-btn danger">Supprimer ce billet</button>
+    </form>
+  {% endif %}
+</article>
+
+<section class="panel" id="commentaires">
+  <h2>Commentaires ({{ post.commentaires|length }})</h2>
+  {% for c in post.commentaires %}
+    <div class="comment">
+      <a href="{{ url_for('main.profile', pseudo=c.auteur.pseudo) }}">@{{ c.auteur.pseudo }}</a>
+      <span class="muted">{{ c.date_creation.strftime('%d/%m/%Y %H:%M') }}</span>
+      <p>{{ c.contenu }}</p>
+    </div>
+  {% else %}
+    <p class="muted">Aucun commentaire pour le moment.</p>
+  {% endfor %}
+  {% if current_user.is_authenticated %}
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      {{ field(form.contenu, rows=3) }}
+      {{ form.submit(class="btn") }}
+    </form>
+  {% else %}
+    <p><a href="{{ url_for('auth.login', next=request.path) }}">Connectez-vous</a> pour commenter.</p>
+  {% endif %}
+</section>
+{% endblock %}

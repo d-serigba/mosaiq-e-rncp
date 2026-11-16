@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_macros.html" import field %}
+{% block title %}Nouveau billet — mosaïq(e){% endblock %}
+{% block content %}
+<div class="panel narrow">
+  <h1>Nouveau billet</h1>
+  <form method="post" enctype="multipart/form-data" id="post-form" novalidate>
+    {{ form.hidden_tag() }}
+    {{ field(form.type_post) }}
+    {{ field(form.titre) }}
+    <div data-types="texte citation">{{ field(form.contenu_texte, rows=6) }}</div>
+    <div data-types="image">{{ field(form.image, accept="image/png,image/jpeg,image/gif,image/webp") }}</div>
+    <div data-types="lien">{{ field(form.media_url, placeholder="https://") }}</div>
+    {{ field(form.tags, placeholder="voyage photo #art") }}
+    {{ form.submit(class="btn") }}
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/post_form.js') }}" defer></script>{% endblock %}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{% block title %}mosaïq(e){% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-login-url="{{ url_for('auth.login') }}">
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('main.index') }}">mosaïq(e)</a>
+    <nav class="nav">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.new_post') }}">+ Billet</a>
+        <a href="{{ url_for('main.profile', pseudo=current_user.pseudo) }}">@{{ current_user.pseudo }}</a>
+        {% if current_user.is_admin %}<a href="{{ url_for('admin.dashboard') }}">Admin</a>{% endif %}
+        <form method="post" action="{{ url_for('auth.logout') }}" class="inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="link-btn">Déconnexion</button>
+        </form>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}">Connexion</a>
+        <a href="{{ url_for('auth.register') }}">Inscription</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <p class="flash flash-{{ category }}" role="status">{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
